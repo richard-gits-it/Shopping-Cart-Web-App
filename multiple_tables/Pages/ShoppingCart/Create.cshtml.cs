@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using multiple_tables.Data;
 using multiple_tables.models;
 
-namespace multiple_tables.Pages.Movies
+namespace multiple_tables.Pages.ShoppingCart
 {
     public class CreateModel : PageModel
     {
@@ -21,22 +21,24 @@ namespace multiple_tables.Pages.Movies
 
         public IActionResult OnGet()
         {
+        ViewData["OrderId"] = new SelectList(_context.Orders, "Id", "Id");
+        ViewData["ProductId"] = new SelectList(_context.Products, "ID", "ID");
             return Page();
         }
 
         [BindProperty]
-        public Products Product { get; set; } = default!;
+        public OrderDetails OrderDetails { get; set; } = default!;
         
 
         // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
         public async Task<IActionResult> OnPostAsync()
         {
-          if (!ModelState.IsValid || _context.Products == null || Product == null)
+          if (!ModelState.IsValid || _context.OrderDetails == null || OrderDetails == null)
             {
                 return Page();
             }
 
-            _context.Products.Add(Product);
+            _context.OrderDetails.Add(OrderDetails);
             await _context.SaveChangesAsync();
 
             return RedirectToPage("./Index");

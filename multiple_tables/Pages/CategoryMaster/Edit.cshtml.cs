@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using multiple_tables.Data;
 using multiple_tables.models;
 
-namespace multiple_tables.Pages.Movies
+namespace multiple_tables.Pages.CategoryMaster
 {
     public class EditModel : PageModel
     {
@@ -21,21 +21,21 @@ namespace multiple_tables.Pages.Movies
         }
 
         [BindProperty]
-        public Products Movie { get; set; } = default!;
+        public Categories Categories { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
-            if (id == null || _context.Products == null)
+            if (id == null || _context.Categories == null)
             {
                 return NotFound();
             }
 
-            var movie =  await _context.Products.FirstOrDefaultAsync(m => m.ID == id);
-            if (movie == null)
+            var categories =  await _context.Categories.FirstOrDefaultAsync(m => m.Id == id);
+            if (categories == null)
             {
                 return NotFound();
             }
-            Movie = movie;
+            Categories = categories;
             return Page();
         }
 
@@ -48,7 +48,7 @@ namespace multiple_tables.Pages.Movies
                 return Page();
             }
 
-            _context.Attach(Movie).State = EntityState.Modified;
+            _context.Attach(Categories).State = EntityState.Modified;
 
             try
             {
@@ -56,7 +56,7 @@ namespace multiple_tables.Pages.Movies
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!MovieExists(Movie.ID))
+                if (!CategoriesExists(Categories.Id))
                 {
                     return NotFound();
                 }
@@ -69,9 +69,9 @@ namespace multiple_tables.Pages.Movies
             return RedirectToPage("./Index");
         }
 
-        private bool MovieExists(int id)
+        private bool CategoriesExists(int id)
         {
-          return (_context.Products?.Any(e => e.ID == id)).GetValueOrDefault();
+          return (_context.Categories?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

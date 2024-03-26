@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using multiple_tables.Data;
 using multiple_tables.models;
 
-namespace multiple_tables.Pages.Movies
+namespace multiple_tables.Pages.ShoppingCart
 {
     public class DetailsModel : PageModel
     {
@@ -19,23 +19,23 @@ namespace multiple_tables.Pages.Movies
             _context = context;
         }
 
-      public Products Movie { get; set; } = default!; 
+      public OrderDetails OrderDetails { get; set; } = default!; 
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
-            if (id == null || _context.Products == null)
+            if (id == null || _context.OrderDetails == null)
             {
                 return NotFound();
             }
 
-            var movie = await _context.Products.FirstOrDefaultAsync(m => m.ID == id);
-            if (movie == null)
+            var orderdetails = await _context.OrderDetails.FirstOrDefaultAsync(m => m.OrderId == id);
+            if (orderdetails == null)
             {
                 return NotFound();
             }
             else 
             {
-                Movie = movie;
+                OrderDetails = orderdetails;
             }
             return Page();
         }

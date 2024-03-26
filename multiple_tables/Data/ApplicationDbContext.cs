@@ -31,5 +31,6 @@ namespace multiple_tables.Data
                 .WithOne(p => p.Category)
                 .HasForeignKey(p => p.CategoryId);
         }
+        public DbSet<multiple_tables.models.Categories> Categories { get; set; } = default!;
     }
 }

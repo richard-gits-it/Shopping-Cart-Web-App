@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using multiple_tables.Data;
 using multiple_tables.models;
 
-namespace multiple_tables.Pages.Movies
+namespace multiple_tables.Pages.CategoryMaster
 {
     public class DeleteModel : PageModel
     {
@@ -20,40 +20,40 @@ namespace multiple_tables.Pages.Movies
         }
 
         [BindProperty]
-      public Products Product { get; set; } = default!;
+      public Categories Categories { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
-            if (id == null || _context.Products == null)
+            if (id == null || _context.Categories == null)
             {
                 return NotFound();
             }
 
-            var movie = await _context.Products.FirstOrDefaultAsync(m => m.ID == id);
+            var categories = await _context.Categories.FirstOrDefaultAsync(m => m.Id == id);
 
-            if (movie == null)
+            if (categories == null)
             {
                 return NotFound();
             }
             else 
             {
-                Product = movie;
+                Categories = categories;
             }
             return Page();
         }
 
         public async Task<IActionResult> OnPostAsync(int? id)
         {
-            if (id == null || _context.Products == null)
+            if (id == null || _context.Categories == null)
             {
                 return NotFound();
             }
-            var movie = await _context.Products.FindAsync(id);
+            var categories = await _context.Categories.FindAsync(id);
 
-            if (movie != null)
+            if (categories != null)
             {
-                Product = movie;
-                _context.Products.Remove(Product);
+                Categories = categories;
+                _context.Categories.Remove(Categories);
                 await _context.SaveChangesAsync();
             }
 
