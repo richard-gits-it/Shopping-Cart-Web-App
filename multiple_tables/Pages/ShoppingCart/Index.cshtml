@@ -5,7 +5,7 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>Shopping Cart</h1>
 
 <p>
     <a asp-page="Create">Create New</a>
@@ -32,29 +32,62 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model.OrderDetails) {
+        @foreach (var item in Model.OrderDetails)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Order.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Product.ID)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UnitPrice)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Quantity)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Discount)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                    @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                    @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                </td>
+            </tr>
+        }
+    </tbody>
+    <tfoot>
         <tr>
+            <td colspan="4"></td>
+            <td>Subtotal:</td>
             <td>
-                @Html.DisplayFor(modelItem => item.Order.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Product.ID)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.UnitPrice)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Quantity)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Discount)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                @{
+                    decimal subtotal = Model.OrderDetails.Sum(item => item.UnitPrice * item.Quantity * (decimal)(1 - item.Discount));
+                    @String.Format("{0:C}", subtotal)
+                }
             </td>
         </tr>
-}
-    </tbody>
+        <tr>
+            <td colspan="4"></td>
+            <td>GST (5%):</td>
+            <td>
+                @{
+                    decimal gst = subtotal * 0.05m;
+                    @String.Format("{0:C}", gst)
+                }
+            </td>
+        </tr>
+        <tr>
+            <td colspan="4"></td>
+            <td>Total:</td>
+            <td>
+                @{
+                    decimal total = subtotal + gst;
+                    @String.Format("{0:C}", total)
+                }
+            </td>
+        </tr>
+    </tfoot>
 </table>

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using multiple_tables.Services;
 
 namespace multiple_tables.Pages
 {
@@ -7,9 +8,11 @@ namespace multiple_tables.Pages
     {
         private readonly ILogger<IndexModel> _logger;
 
+
         public IndexModel(ILogger<IndexModel> logger)
         {
             _logger = logger;
+
         }
 
         public void OnGet()

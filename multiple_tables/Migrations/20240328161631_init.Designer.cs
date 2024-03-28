@@ -12,7 +12,7 @@ using multiple_tables.Data;
 namespace multiple_tables.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240319202415_init")]
+    [Migration("20240328161631_init")]
     partial class init
     {
         /// <inheritdoc />

@@ -22,7 +22,7 @@ namespace multiple_tables.Pages.ShoppingCart
         public IActionResult OnGet()
         {
         ViewData["OrderId"] = new SelectList(_context.Orders, "Id", "Id");
-        ViewData["ProductId"] = new SelectList(_context.Products, "ID", "ID");
+        ViewData["ProductId"] = new SelectList(_context.Products, "ID", "Name");
             return Page();
         }
 
