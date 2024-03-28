@@ -32,5 +32,6 @@ namespace multiple_tables.Data
                 .HasForeignKey(p => p.CategoryId);
         }
         public DbSet<multiple_tables.models.Categories> Categories { get; set; } = default!;
+        public DbSet<multiple_tables.models.Cart> Cart { get; set; } = default!;
     }
 }

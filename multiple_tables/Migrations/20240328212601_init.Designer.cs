@@ -12,7 +12,7 @@ using multiple_tables.Data;
 namespace multiple_tables.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240328161631_init")]
+    [Migration("20240328212601_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -89,6 +89,10 @@ namespace multiple_tables.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -140,6 +144,10 @@ namespace multiple_tables.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("IdentityUser");
+
+                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -225,6 +233,26 @@ namespace multiple_tables.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("multiple_tables.models.Cart", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("Cart");
                 });
 
             modelBuilder.Entity("multiple_tables.models.Categories", b =>
@@ -376,6 +404,9 @@ namespace multiple_tables.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
 
+                    b.Property<int?>("CartId")
+                        .HasColumnType("int");
+
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
@@ -398,9 +429,18 @@ namespace multiple_tables.Migrations
 
                     b.HasKey("ID");
 
+                    b.HasIndex("CartId");
+
                     b.HasIndex("CategoryId");
 
                     b.ToTable("Products");
+                });
+
+            modelBuilder.Entity("multiple_tables.models.ApplicationUser", b =>
+                {
+                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
+
+                    b.HasDiscriminator().HasValue("ApplicationUser");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -454,6 +494,17 @@ namespace multiple_tables.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("multiple_tables.models.Cart", b =>
+                {
+                    b.HasOne("multiple_tables.models.ApplicationUser", "User")
+                        .WithOne("shoppingCart")
+                        .HasForeignKey("multiple_tables.models.Cart", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("multiple_tables.models.OrderDetails", b =>
                 {
                     b.HasOne("multiple_tables.models.Orders", "Order")
@@ -486,6 +537,10 @@ namespace multiple_tables.Migrations
 
             modelBuilder.Entity("multiple_tables.models.Products", b =>
                 {
+                    b.HasOne("multiple_tables.models.Cart", null)
+                        .WithMany("CartProducts")
+                        .HasForeignKey("CartId");
+
                     b.HasOne("multiple_tables.models.Categories", "Category")
                         .WithMany("Products")
                         .HasForeignKey("CategoryId")
@@ -493,6 +548,11 @@ namespace multiple_tables.Migrations
                         .IsRequired();
 
                     b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("multiple_tables.models.Cart", b =>
+                {
+                    b.Navigation("CartProducts");
                 });
 
             modelBuilder.Entity("multiple_tables.models.Categories", b =>
@@ -503,6 +563,12 @@ namespace multiple_tables.Migrations
             modelBuilder.Entity("multiple_tables.models.Orders", b =>
                 {
                     b.Navigation("OrderDetails");
+                });
+
+            modelBuilder.Entity("multiple_tables.models.ApplicationUser", b =>
+                {
+                    b.Navigation("shoppingCart")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

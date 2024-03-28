@@ -21,24 +21,23 @@ namespace multiple_tables.Pages.ShoppingCart
 
         public IActionResult OnGet()
         {
-        ViewData["OrderId"] = new SelectList(_context.Orders, "Id", "Id");
-        ViewData["ProductId"] = new SelectList(_context.Products, "ID", "Name");
+        ViewData["UserId"] = new SelectList(_context.Set<ApplicationUser>(), "Id", "Id");
             return Page();
         }
 
         [BindProperty]
-        public OrderDetails OrderDetails { get; set; } = default!;
+        public Cart Cart { get; set; } = default!;
         
 
         // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
         public async Task<IActionResult> OnPostAsync()
         {
-          if (!ModelState.IsValid || _context.OrderDetails == null || OrderDetails == null)
+          if (!ModelState.IsValid || _context.Cart == null || Cart == null)
             {
                 return Page();
             }
 
-            _context.OrderDetails.Add(OrderDetails);
+            _context.Cart.Add(Cart);
             await _context.SaveChangesAsync();
 
             return RedirectToPage("./Index");

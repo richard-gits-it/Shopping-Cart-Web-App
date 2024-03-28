@@ -19,23 +19,23 @@ namespace multiple_tables.Pages.ShoppingCart
             _context = context;
         }
 
-      public OrderDetails OrderDetails { get; set; } = default!; 
+      public Cart Cart { get; set; } = default!; 
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
-            if (id == null || _context.OrderDetails == null)
+            if (id == null || _context.Cart == null)
             {
                 return NotFound();
             }
 
-            var orderdetails = await _context.OrderDetails.FirstOrDefaultAsync(m => m.OrderId == id);
-            if (orderdetails == null)
+            var cart = await _context.Cart.FirstOrDefaultAsync(m => m.Id == id);
+            if (cart == null)
             {
                 return NotFound();
             }
             else 
             {
-                OrderDetails = orderdetails;
+                Cart = cart;
             }
             return Page();
         }

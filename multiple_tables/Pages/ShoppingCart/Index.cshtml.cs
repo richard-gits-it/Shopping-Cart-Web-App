@@ -2,39 +2,41 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using multiple_tables.Data;
 using multiple_tables.models;
-using Newtonsoft.Json;
 
 namespace multiple_tables.Pages.ShoppingCart
 {
     public class IndexModel : PageModel
     {
         private readonly multiple_tables.Data.ApplicationDbContext _context;
-        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public IndexModel(multiple_tables.Data.ApplicationDbContext context, IHttpContextAccessor httpContextAccessor)
+        public IndexModel(multiple_tables.Data.ApplicationDbContext context, UserManager<IdentityUser> userManager)
         {
             _context = context;
-            _httpContextAccessor = httpContextAccessor;
+            _userManager = userManager;
         }
 
-        public IList<OrderDetails> OrderDetails { get;set; } = default!;
+        public IList<Cart> Cart { get;set; } = default!;
 
         public async Task OnGetAsync()
         {
-            // Check if the cookie exists
-            if (_httpContextAccessor.HttpContext.Request.Cookies.ContainsKey("OrderDetailsCookie"))
-            {
-                // Retrieve the cookie value
-                var orderDetailsJson = _httpContextAccessor.HttpContext.Request.Cookies["OrderDetailsCookie"];
+            // Get the current user
+            var currentUser = await _userManager.GetUserAsync(User);
 
-                // Deserialize JSON string to a list of OrderDetails
-                OrderDetails = JsonConvert.DeserializeObject<List<OrderDetails>>(orderDetailsJson);
+            // Check if user exists
+            if (currentUser != null)
+            {
+                // Get the cart for the current user
+                Cart = await _context.Cart
+                    .Where(c => c.UserId == currentUser.Id)
+                    .Include(c => c.User)
+                    .ToListAsync();
             }
         }
     }

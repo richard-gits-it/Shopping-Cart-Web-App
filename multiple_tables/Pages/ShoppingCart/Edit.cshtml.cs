@@ -21,23 +21,22 @@ namespace multiple_tables.Pages.ShoppingCart
         }
 
         [BindProperty]
-        public OrderDetails OrderDetails { get; set; } = default!;
+        public Cart Cart { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
-            if (id == null || _context.OrderDetails == null)
+            if (id == null || _context.Cart == null)
             {
                 return NotFound();
             }
 
-            var orderdetails =  await _context.OrderDetails.FirstOrDefaultAsync(m => m.OrderId == id);
-            if (orderdetails == null)
+            var cart =  await _context.Cart.FirstOrDefaultAsync(m => m.Id == id);
+            if (cart == null)
             {
                 return NotFound();
             }
-            OrderDetails = orderdetails;
-           ViewData["OrderId"] = new SelectList(_context.Orders, "Id", "Id");
-           ViewData["ProductId"] = new SelectList(_context.Products, "ID", "ID");
+            Cart = cart;
+           ViewData["UserId"] = new SelectList(_context.Set<ApplicationUser>(), "Id", "Id");
             return Page();
         }
 
@@ -50,7 +49,7 @@ namespace multiple_tables.Pages.ShoppingCart
                 return Page();
             }
 
-            _context.Attach(OrderDetails).State = EntityState.Modified;
+            _context.Attach(Cart).State = EntityState.Modified;
 
             try
             {
@@ -58,7 +57,7 @@ namespace multiple_tables.Pages.ShoppingCart
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!OrderDetailsExists(OrderDetails.OrderId))
+                if (!CartExists(Cart.Id))
                 {
                     return NotFound();
                 }
@@ -71,9 +70,9 @@ namespace multiple_tables.Pages.ShoppingCart
             return RedirectToPage("./Index");
         }
 
-        private bool OrderDetailsExists(int id)
+        private bool CartExists(int id)
         {
-          return (_context.OrderDetails?.Any(e => e.OrderId == id)).GetValueOrDefault();
+          return (_context.Cart?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

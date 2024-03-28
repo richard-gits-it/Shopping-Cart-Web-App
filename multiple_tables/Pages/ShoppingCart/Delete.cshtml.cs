@@ -20,40 +20,40 @@ namespace multiple_tables.Pages.ShoppingCart
         }
 
         [BindProperty]
-      public OrderDetails OrderDetails { get; set; } = default!;
+      public Cart Cart { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
-            if (id == null || _context.OrderDetails == null)
+            if (id == null || _context.Cart == null)
             {
                 return NotFound();
             }
 
-            var orderdetails = await _context.OrderDetails.FirstOrDefaultAsync(m => m.OrderId == id);
+            var cart = await _context.Cart.FirstOrDefaultAsync(m => m.Id == id);
 
-            if (orderdetails == null)
+            if (cart == null)
             {
                 return NotFound();
             }
             else 
             {
-                OrderDetails = orderdetails;
+                Cart = cart;
             }
             return Page();
         }
 
         public async Task<IActionResult> OnPostAsync(int? id)
         {
-            if (id == null || _context.OrderDetails == null)
+            if (id == null || _context.Cart == null)
             {
                 return NotFound();
             }
-            var orderdetails = await _context.OrderDetails.FindAsync(id);
+            var cart = await _context.Cart.FindAsync(id);
 
-            if (orderdetails != null)
+            if (cart != null)
             {
-                OrderDetails = orderdetails;
-                _context.OrderDetails.Remove(OrderDetails);
+                Cart = cart;
+                _context.Cart.Remove(Cart);
                 await _context.SaveChangesAsync();
             }
 

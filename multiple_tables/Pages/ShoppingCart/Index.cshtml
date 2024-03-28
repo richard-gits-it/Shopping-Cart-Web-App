@@ -5,7 +5,7 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Shopping Cart</h1>
+<h1>Index</h1>
 
 <p>
     <a asp-page="Create">Create New</a>
@@ -14,80 +14,23 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.OrderDetails[0].Order)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.OrderDetails[0].Product)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.OrderDetails[0].UnitPrice)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.OrderDetails[0].Quantity)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.OrderDetails[0].Discount)
+                @Html.DisplayNameFor(model => model.Cart[0].User)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model.OrderDetails)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Order.Id)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Product.ID)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.UnitPrice)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Quantity)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Discount)
-                </td>
-                <td>
-                    @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                    @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                    @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
-                </td>
-            </tr>
-        }
+@foreach (var item in Model.Cart) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.User.Id)
+            </td>
+            <td>
+                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
     </tbody>
-    <tfoot>
-        <tr>
-            <td colspan="4"></td>
-            <td>Subtotal:</td>
-            <td>
-                @{
-                    decimal subtotal = Model.OrderDetails.Sum(item => item.UnitPrice * item.Quantity * (decimal)(1 - item.Discount));
-                    @String.Format("{0:C}", subtotal)
-                }
-            </td>
-        </tr>
-        <tr>
-            <td colspan="4"></td>
-            <td>GST (5%):</td>
-            <td>
-                @{
-                    decimal gst = subtotal * 0.05m;
-                    @String.Format("{0:C}", gst)
-                }
-            </td>
-        </tr>
-        <tr>
-            <td colspan="4"></td>
-            <td>Total:</td>
-            <td>
-                @{
-                    decimal total = subtotal + gst;
-                    @String.Format("{0:C}", total)
-                }
-            </td>
-        </tr>
-    </tfoot>
 </table>
