@@ -21,25 +21,33 @@ namespace multiple_tables.Pages.ProductMaster
 
         public IActionResult OnGet()
         {
-        ViewData["CategoryId"] = new SelectList(_context.Set<Categories>(), "Id", "Name");
+            ViewData["CategoryId"] = new SelectList(_context.Set<Categories>(), "Id", "Name");
 
             return Page();
         }
 
         public List<SelectListItem> Categories { get; set; }
 
-
         [BindProperty]
         public Products Products { get; set; } = default!;
-        
+
+        [BindProperty]
+        public IFormFile ImageFile { get; set; }
+
 
         // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
         public async Task<IActionResult> OnPostAsync()
         {
-          if (_context.Products == null || Products == null)
+            if (_context.Products == null || Products == null || ImageFile == null)
             {
                 return Page();
             }
+
+            using (var memoryStream = new MemoryStream())
+            {
+                await ImageFile.CopyToAsync(memoryStream);
+                Products.ImageData = memoryStream.ToArray();
+            } 
 
             _context.Products.Add(Products);
             await _context.SaveChangesAsync();

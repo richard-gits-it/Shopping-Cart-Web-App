@@ -23,6 +23,9 @@ namespace multiple_tables.Pages.ProductMaster
         [BindProperty]
         public Products Products { get; set; } = default!;
 
+        [BindProperty]
+        public IFormFile ImageFile { get; set; }
+
         public async Task<IActionResult> OnGetAsync(int? id)
         {
             if (id == null || _context.Products == null)
@@ -36,7 +39,7 @@ namespace multiple_tables.Pages.ProductMaster
                 return NotFound();
             }
             Products = products;
-           ViewData["CategoryId"] = new SelectList(_context.Set<Categories>(), "Id", "Id");
+           ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name");
             return Page();
         }
 
@@ -44,12 +47,21 @@ namespace multiple_tables.Pages.ProductMaster
         // For more details, see https://aka.ms/RazorPagesCRUD.
         public async Task<IActionResult> OnPostAsync()
         {
-            if (!ModelState.IsValid)
-            {
-                return Page();
-            }
+            //if (_context.Products == null || Products == null || ImageFile == null)
+            //{
+            //    return Page();
+            //}
 
             _context.Attach(Products).State = EntityState.Modified;
+
+            if (ImageFile != null)
+            {
+                using (var memoryStream = new MemoryStream())
+                {
+                    await ImageFile.CopyToAsync(memoryStream);
+                    Products.ImageData = memoryStream.ToArray();
+                }
+            }
 
             try
             {

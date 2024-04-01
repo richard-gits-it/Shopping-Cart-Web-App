@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using multiple_tables.Data;
 using multiple_tables.models;
+using System.Drawing;
 
 namespace multiple_tables.Pages
 {
@@ -55,6 +56,15 @@ namespace multiple_tables.Pages
             {
                 Products = await _context.Products
                 .Include(p => p.Category).ToListAsync();
+            }
+        }
+
+        public byte[] ImageToByteArray(Image image)
+        {
+            using (var memoryStream = new MemoryStream())
+            {
+                image.Save(memoryStream, System.Drawing.Imaging.ImageFormat.Png); // Change format if needed
+                return memoryStream.ToArray();
             }
         }
     }

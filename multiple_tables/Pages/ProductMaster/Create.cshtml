@@ -11,7 +11,7 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form method="post">
+        <form method="post" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Products.Name" class="control-label"></label>
@@ -25,7 +25,10 @@
             </div>
             <div class="form-group">
                 <label asp-for="Products.CategoryId" class="control-label"></label>
-                <select asp-for="Products.CategoryId" class ="form-control" asp-items="ViewBag.CategoryId"></select>
+                <select asp-for="Products.CategoryId" class ="form-control" asp-items="ViewBag.CategoryId">
+                    <option value="">-- Select Category --</option>
+                </select>
+                <span asp-validation-for="Products.CategoryId" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Products.Description" class="control-label"></label>
@@ -43,6 +46,12 @@
                 </label>
             </div>
             <div class="form-group">
+                <label asp-for="Products.ImageData" class="control-label"></label>
+                <!-- Change the input type to file -->
+                <input type="file" asp-for="ImageFile" class="form-control" accept="image/jpeg" />
+                <span asp-validation-for="Products.ImageData" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
         </form>
@@ -56,3 +65,4 @@
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
+

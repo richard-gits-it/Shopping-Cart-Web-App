@@ -212,6 +212,31 @@ namespace multiple_tables.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Products",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ImageData = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UnitPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    CategoryId = table.Column<int>(type: "int", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UnitsInStock = table.Column<int>(type: "int", nullable: false),
+                    Discontinued = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Products", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_Products_Categories_CategoryId",
+                        column: x => x.CategoryId,
+                        principalTable: "Categories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Orders",
                 columns: table => new
                 {
@@ -239,32 +264,27 @@ namespace multiple_tables.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Products",
+                name: "CartProducts",
                 columns: table => new
                 {
-                    ID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UnitPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    CategoryId = table.Column<int>(type: "int", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UnitsInStock = table.Column<int>(type: "int", nullable: false),
-                    Discontinued = table.Column<bool>(type: "bit", nullable: false),
-                    CartId = table.Column<int>(type: "int", nullable: true)
+                    CartId = table.Column<int>(type: "int", nullable: false),
+                    ProductId = table.Column<int>(type: "int", nullable: false),
+                    Quantity = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Products", x => x.ID);
+                    table.PrimaryKey("PK_CartProducts", x => new { x.CartId, x.ProductId });
                     table.ForeignKey(
-                        name: "FK_Products_Cart_CartId",
+                        name: "FK_CartProducts_Cart_CartId",
                         column: x => x.CartId,
                         principalTable: "Cart",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Products_Categories_CategoryId",
-                        column: x => x.CategoryId,
-                        principalTable: "Categories",
                         principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CartProducts_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Products",
+                        principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -341,6 +361,11 @@ namespace multiple_tables.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_CartProducts_ProductId",
+                table: "CartProducts",
+                column: "ProductId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_OrderDetails_ProductId",
                 table: "OrderDetails",
                 column: "ProductId");
@@ -349,11 +374,6 @@ namespace multiple_tables.Migrations
                 name: "IX_Orders_CustomerId",
                 table: "Orders",
                 column: "CustomerId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Products_CartId",
-                table: "Products",
-                column: "CartId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Products_CategoryId",
@@ -380,10 +400,16 @@ namespace multiple_tables.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "CartProducts");
+
+            migrationBuilder.DropTable(
                 name: "OrderDetails");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "Cart");
 
             migrationBuilder.DropTable(
                 name: "Orders");
@@ -392,16 +418,13 @@ namespace multiple_tables.Migrations
                 name: "Products");
 
             migrationBuilder.DropTable(
+                name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
                 name: "Customer");
 
             migrationBuilder.DropTable(
-                name: "Cart");
-
-            migrationBuilder.DropTable(
                 name: "Categories");
-
-            migrationBuilder.DropTable(
-                name: "AspNetUsers");
         }
     }
 }

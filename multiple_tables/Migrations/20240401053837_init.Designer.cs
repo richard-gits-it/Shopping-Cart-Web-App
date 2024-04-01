@@ -12,7 +12,7 @@ using multiple_tables.Data;
 namespace multiple_tables.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240328212601_init")]
+    [Migration("20240401053837_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -255,6 +255,24 @@ namespace multiple_tables.Migrations
                     b.ToTable("Cart");
                 });
 
+            modelBuilder.Entity("multiple_tables.models.CartProducts", b =>
+                {
+                    b.Property<int>("CartId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.HasKey("CartId", "ProductId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("CartProducts");
+                });
+
             modelBuilder.Entity("multiple_tables.models.Categories", b =>
                 {
                     b.Property<int>("Id")
@@ -404,9 +422,6 @@ namespace multiple_tables.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
 
-                    b.Property<int?>("CartId")
-                        .HasColumnType("int");
-
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
@@ -416,6 +431,10 @@ namespace multiple_tables.Migrations
 
                     b.Property<bool>("Discontinued")
                         .HasColumnType("bit");
+
+                    b.Property<byte[]>("ImageData")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -428,8 +447,6 @@ namespace multiple_tables.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("ID");
-
-                    b.HasIndex("CartId");
 
                     b.HasIndex("CategoryId");
 
@@ -505,6 +522,25 @@ namespace multiple_tables.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("multiple_tables.models.CartProducts", b =>
+                {
+                    b.HasOne("multiple_tables.models.Cart", "Cart")
+                        .WithMany("CartProducts")
+                        .HasForeignKey("CartId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("multiple_tables.models.Products", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Cart");
+
+                    b.Navigation("Product");
+                });
+
             modelBuilder.Entity("multiple_tables.models.OrderDetails", b =>
                 {
                     b.HasOne("multiple_tables.models.Orders", "Order")
@@ -537,10 +573,6 @@ namespace multiple_tables.Migrations
 
             modelBuilder.Entity("multiple_tables.models.Products", b =>
                 {
-                    b.HasOne("multiple_tables.models.Cart", null)
-                        .WithMany("CartProducts")
-                        .HasForeignKey("CartId");
-
                     b.HasOne("multiple_tables.models.Categories", "Category")
                         .WithMany("Products")
                         .HasForeignKey("CategoryId")

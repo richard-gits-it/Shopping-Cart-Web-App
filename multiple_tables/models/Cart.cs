@@ -10,6 +10,6 @@ namespace multiple_tables.models
         [ForeignKey("UserId")]
         public ApplicationUser User { get; set; } = default!;
 
-        public ICollection<Products> CartProducts { get; }
+        public ICollection<CartProducts> CartProducts { get; }
     }
 }

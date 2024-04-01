@@ -21,6 +21,13 @@
             height: auto;
         }
 
+        .product-name {
+            width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
         .center-button {
             display: flex;
             justify-content: center;
@@ -89,9 +96,9 @@
             {
                 <div class="col-md-3">
                     <div class="card product-card">
-                        <img src="https://via.placeholder.com/300" class="card-img-top product-image" alt="Product Image">
+                            <img src="data:image;base64,@Convert.ToBase64String(item.ImageData)" class="card-img-top product-image" alt="Product Image"/>
                         <div class="card-body">
-                            <h5 class="card-title">@item.Name</h5>
+                                <h5 class="card-title product-name">@item.Name</h5>
                             <p class="card-text">$@item.UnitPrice</p>
                             <div class="center-button">
                                 <a href="#" class="btn btn-primary">Add to Cart</a>

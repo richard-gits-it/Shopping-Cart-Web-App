@@ -21,6 +21,9 @@ namespace multiple_tables.Data
             modelBuilder.Entity<OrderDetails>()
                 .HasKey(od => new { od.OrderId, od.ProductId });
 
+            modelBuilder.Entity<CartProducts>()
+                .HasKey(cp => new { cp.CartId, cp.ProductId });
+
             modelBuilder.Entity<Orders>()
                 .HasMany(o => o.OrderDetails)
                 .WithOne(od => od.Order)
