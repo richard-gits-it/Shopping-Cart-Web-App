@@ -32,6 +32,7 @@ namespace multiple_tables.Pages.ShoppingCart
 
         public async Task<IActionResult> OnGetAsync()
         {
+            //gets user id
             var userId = _userManager.GetUserId(User);
 
             if (userId != null)
@@ -59,7 +60,7 @@ namespace multiple_tables.Pages.ShoppingCart
                     CartProducts = new List<CartProducts>();
                 }
             }
-            else
+            else //if user is not logged in, use session to store cart
             {
                 Cart cart;
                 if (_httpContextAccessor.HttpContext.Session.TryGetValue("Cart", out byte[] cartData))
