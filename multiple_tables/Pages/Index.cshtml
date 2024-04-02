@@ -1,5 +1,6 @@
 ﻿@page
 @model IndexModel
+
 @{
     ViewData["Title"] = "Home page";
 }
@@ -108,7 +109,7 @@
                                 <h5 class="card-title product-name">@item.Name</h5>
                             <p class="card-text">$@item.UnitPrice</p>
                             <div class="center-button">
-                                <a href="#" class="btn btn-primary">Add to Cart</a>
+                                <a asp-controller="CartController" asp-action="AddToCart" asp-route-productId="@item.ID" class="btn btn-primary" method="post">Add to Cart</a>
                             </div>
                         </div>
                     </div>

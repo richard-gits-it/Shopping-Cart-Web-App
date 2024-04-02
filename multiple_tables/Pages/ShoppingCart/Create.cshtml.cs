@@ -22,7 +22,7 @@ namespace multiple_tables.Pages.ShoppingCart
         public IActionResult OnGet()
         {
         ViewData["CartId"] = new SelectList(_context.Cart, "Id", "Id");
-        ViewData["ProductId"] = new SelectList(_context.Products, "ID", "ID");
+        ViewData["ProductId"] = new SelectList(_context.Products, "ID", "Name");
             return Page();
         }
 
@@ -33,7 +33,7 @@ namespace multiple_tables.Pages.ShoppingCart
         // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
         public async Task<IActionResult> OnPostAsync()
         {
-          if (!ModelState.IsValid || _context.CartProducts == null || CartProducts == null)
+          if (_context.CartProducts == null || CartProducts == null)
             {
                 return Page();
             }

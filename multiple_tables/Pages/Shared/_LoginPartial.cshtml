@@ -1,32 +1,64 @@
 ﻿@using Microsoft.AspNetCore.Identity
+@using Microsoft.EntityFrameworkCore;
+@using System.Text.Json;
+@using multiple_tables.models;
 @inject SignInManager<IdentityUser> SignInManager
 @inject UserManager<IdentityUser> UserManager
+@inject IHttpContextAccessor _httpContextAccessor
+@inject ApplicationDbContext DbContext
+
+@{
+    int cartItemCount = 0;
+
+    if (User.Identity.IsAuthenticated)
+    {
+        var userId = UserManager.GetUserId(User);
+
+        var userCart = await DbContext.Cart
+            .Include(c => c.CartProducts)
+            .FirstOrDefaultAsync(c => c.UserId == userId);
+
+        if (userCart != null)
+        {
+            cartItemCount = userCart.CartProducts.Sum(cp => cp.Quantity);
+        }
+    }
+    else
+    {
+        //Cart sessionCart;
+        //if (_httpContextAccessor.HttpContext.Session.TryGetValue("Cart", out byte[] cartData))
+        //{
+        //    sessionCart = JsonSerializer.Deserialize<Cart>(cartData);
+        //    cartItemCount = sessionCart.CartProducts.Sum(cp => cp.Quantity);
+        //}
+    }
+}
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 
 <ul class="navbar-nav">
-@if (SignInManager.IsSignedIn(User))
-{
-    <li class="nav-item dropdown">
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <li class="nav-item dropdown">
             <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Hello @User.Identity?.Name!</a>
-        <div class="dropdown-menu dropdown-menu-end">
-            <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Profile</a>
-            <a class="dropdown-item" asp-area="" asp-page="">Order History</a>
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/", new { area = "" })" method="post">Logout</a>
-        </div>
-    </li>
-        <li class="nav-item">
-            <a class="nav-link text-dark" asp-area="" asp-page="/ShoppingCart/index"><i class="fas fa-shopping-cart"></i></a>
+            <div class="dropdown-menu dropdown-menu-end">
+                <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Profile</a>
+                <a class="dropdown-item" asp-area="" asp-page="">Order History</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/", new { area = "" })" method="post">Logout</a>
+            </div>
         </li>
-}
-else
-{
-    <li class="nav-item">
-        <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">Login</a>
-    </li>
-    <li class="nav-item">
-            <a class="nav-link text-dark" asp-area="" asp-page="/ShoppingCart/index"><i class="fas fa-shopping-cart"></i></a>
-    </li>
-}
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-area="" asp-page="/ShoppingCart/index"><i class="fas fa-shopping-cart"></i> (@cartItemCount)</a>
+        </li>
+    }
+    else
+    {
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">Login</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-area="" asp-page="/ShoppingCart/index"><i class="fas fa-shopping-cart"></i> (@cartItemCount)</a>
+        </li>
+    }
 </ul>

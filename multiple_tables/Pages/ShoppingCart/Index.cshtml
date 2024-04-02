@@ -1,5 +1,7 @@
 ﻿@page
 @model multiple_tables.Pages.ShoppingCart.IndexModel
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
 
 @{
     ViewData["Title"] = "Index";
@@ -14,7 +16,7 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.CartProducts[0].Cart)
+                @Html.DisplayNameFor(model => model.CartProducts[0].Product)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.CartProducts[0].Product)
@@ -26,23 +28,31 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model.CartProducts) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Cart.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Product.ID)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Quantity)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
-            </td>
-        </tr>
+        @if (SignInManager.IsSignedIn(User))
+        {
+            @foreach (var item in Model.CartProducts)
+            {
+                <tr>
+                    <td>
+                        <img src="data:image/jpeg;base64,@Convert.ToBase64String(item.Product.ImageData)" alt="Product Image" style="max-width: 100px; max-height: 100px;" />
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Product.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Quantity)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                    @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                    @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                </td>
+            </tr>
+            }
+        }
+        else
+        {
+        }
 }
     </tbody>
 </table>
