@@ -96,7 +96,14 @@
             {
                 <div class="col-md-3">
                     <div class="card product-card">
-                            <img src="data:image;base64,@Convert.ToBase64String(item.ImageData)" class="card-img-top product-image" alt="Product Image"/>
+                        @if (item.ImageData != null)
+                        {
+                            <img src="data:image;base64,@Convert.ToBase64String(item.ImageData)" class="card-img-top product-image" alt="Product Image" />
+                        }
+                        else
+                        {
+                            <img src="path_to_default_image.jpg" class="card-img-top product-image" alt="Default Image" />
+                        }
                         <div class="card-body">
                                 <h5 class="card-title product-name">@item.Name</h5>
                             <p class="card-text">$@item.UnitPrice</p>
