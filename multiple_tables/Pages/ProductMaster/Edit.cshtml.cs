@@ -60,7 +60,7 @@ namespace multiple_tables.Pages.ProductMaster
                 {
                     await ImageFile.CopyToAsync(memoryStream);
                     Products.ImageData = memoryStream.ToArray();
-                }
+                }  
             }
 
             try
