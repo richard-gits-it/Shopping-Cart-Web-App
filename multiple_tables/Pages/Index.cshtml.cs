@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using multiple_tables.Data;
 using multiple_tables.models;
 using System.Drawing;
+using System.Security.Claims;
 using System.Text.Json;
 
 namespace multiple_tables.Pages
@@ -40,36 +41,46 @@ namespace multiple_tables.Pages
         //use cartcontroller to add to cart
         public async Task<IActionResult> OnPostAddToCartAsync(int productId)
         {
-            //check if there is user signed in
+            // Check if there is a user signed in
             if (User.Identity.IsAuthenticated)
             {
-                //get user id
-                var userId = User.Identity.Name;
+                // Get user id from identity
+                string userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-                //get Cart from db
+                // Get Cart from db
                 Cart cart = await _context.Cart
                     .Include(c => c.CartProducts)
                     .FirstOrDefaultAsync(c => c.UserId == userId);
 
+                // If cart doesn't exist, create a new one
                 if (cart == null)
                 {
                     cart = new Cart { UserId = userId };
                     _context.Cart.Add(cart);
-                    await _context.SaveChangesAsync();
-                
                 }
-                //check if product is already in Cart
-                var product = cart.CartProducts.FirstOrDefault(cp => cp.ProductId == productId);
 
+                // Check if the product already exists in the cart
+                var existingProduct = cart.CartProducts.FirstOrDefault(cp => cp.ProductId == productId);
+                if (existingProduct != null)
+                {
+                    // If the product already exists, increase its quantity
+                    existingProduct.Quantity++;
+                }
+                else
+                {
+                    // If the product doesn't exist, add it to the cart
+                    cart.CartProducts.Add(new CartProducts { ProductId = productId, Quantity = 1 });
+                }
 
-
+                await _context.SaveChangesAsync();
             }
             else
             {
-                //if user is not signed in, redirect to login page
+                // If user is not signed in, redirect to login page
                 return RedirectToPage("/Account/Login", new { area = "Identity" });
             }
 
+            // Redirect to index page after adding the product to the cart
             return RedirectToPage("/Index");
         }
     }

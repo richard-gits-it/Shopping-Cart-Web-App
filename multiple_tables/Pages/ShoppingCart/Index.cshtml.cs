@@ -32,16 +32,26 @@ namespace multiple_tables.Pages.ShoppingCart
 
         public async Task<IActionResult> OnGetAsync()
         {
-            //gets user id
+            // Check if user is authenticated
+            if (!User.Identity.IsAuthenticated)
+            {
+                // Redirect to login page if not authenticated
+                return RedirectToPage("/Account/Login", new { area = "Identity" });
+            }
+
+            // Get user id
             var userId = _userManager.GetUserId(User);
 
+            // Check if user id is not null
             if (userId != null)
             {
+                // Retrieve the user's cart including associated products
                 var userCart = await _context.Cart
                     .Include(c => c.CartProducts)
                         .ThenInclude(cp => cp.Product)
                     .FirstOrDefaultAsync(c => c.UserId == userId);
 
+                // If user's cart doesn't exist, create a new one
                 if (userCart == null)
                 {
                     var newCart = new Cart { UserId = userId };
@@ -51,22 +61,19 @@ namespace multiple_tables.Pages.ShoppingCart
                     userCart = newCart;
                 }
 
+                // Check if cart products exist
                 if (userCart.CartProducts != null)
                 {
                     CartProducts = userCart.CartProducts.ToList();
                 }
                 else
                 {
+                    // If cart products don't exist, initialize an empty list
                     CartProducts = new List<CartProducts>();
                 }
             }
-            else //if user is not logged in, redirect to login page
-            {
-                //send a message to the login page
-                _httpContextAccessor.HttpContext.Session.SetString("Message", "You must be logged in to view your cart.");
-                return RedirectToPage("/Account/Login", new { area = "Identity" });
-            }
 
+            // Return the page
             return Page();
         }
 
