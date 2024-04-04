@@ -60,20 +60,11 @@ namespace multiple_tables.Pages.ShoppingCart
                     CartProducts = new List<CartProducts>();
                 }
             }
-            else //if user is not logged in, use session to store cart
+            else //if user is not logged in, redirect to login page
             {
-                Cart cart;
-                if (_httpContextAccessor.HttpContext.Session.TryGetValue("Cart", out byte[] cartData))
-                {
-                    cart = JsonSerializer.Deserialize<Cart>(cartData);
-                }
-                else
-                {
-                    cart = new Cart();
-                    _httpContextAccessor.HttpContext.Session.Set("Cart", JsonSerializer.SerializeToUtf8Bytes(cart));
-                }
-
-                CartProducts = cart.CartProducts?.ToList() ?? new List<CartProducts>();
+                //send a message to the login page
+                _httpContextAccessor.HttpContext.Session.SetString("Message", "You must be logged in to view your cart.");
+                return RedirectToPage("/Account/Login", new { area = "Identity" });
             }
 
             return Page();
