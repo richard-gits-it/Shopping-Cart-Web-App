@@ -10,6 +10,12 @@ namespace multiple_tables.models
         [ForeignKey("UserId")]
         public ApplicationUser User { get; set; } = default!;
 
+        // Initialize CartProducts collection in the constructor
+        public Cart()
+        {
+            CartProducts = new List<CartProducts>();
+        }
         public ICollection<CartProducts> CartProducts { get; set; }
+
     }
 }

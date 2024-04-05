@@ -4,55 +4,114 @@
 @inject UserManager<IdentityUser> UserManager
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Cart";
 }
 
-<h1>Index</h1>
+<section class="h-100">
+  <div class="container h-100 py-5">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col-10">
 
-<p>
-    <a asp-page="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.CartProducts[0].Product)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CartProducts[0].Product)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CartProducts[0].Quantity)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @if (SignInManager.IsSignedIn(User))
-        {
-            @foreach (var item in Model.CartProducts)
-            {
-                <tr>
-                    <td>
-                        <img src="data:image/jpeg;base64,@Convert.ToBase64String(item.Product.ImageData)" alt="Product Image" style="max-width: 100px; max-height: 100px;" />
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Product.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Quantity)
-                </td>
-                <td>
-                    @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                    @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                    @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
-                </td>
-            </tr>
-            }
-        }
-        else
-        {
-        }
-}
-    </tbody>
-</table>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h3 class="fw-normal mb-0 text-black">Shopping Cart</h3>
+        </div>
+                @if (SignInManager.IsSignedIn(User))
+                {
+                    //if user has no items in cart display message
+                    if (Model.CartProducts.Count == 0)
+                    {
+                                <div class="card rounded-3 mb-4">
+                                    <div class="card-body p-4">
+                                        <div class="row d-flex
+                                    justify-content-between align-items-center">
+                                            <div class="col-md-12 col-lg-12 col-xl-12">
+                                                <p class="lead fw-normal mb-2">Your cart is empty</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                    }
+                    @foreach (var item in Model.CartProducts)
+                    {
+                                <div class="card rounded-3 mb-4">
+                                  <div class="card-body p-4">
+                                    <div class="row d-flex justify-content-between align-items-center">
+                                      <div class="col-md-2 col-lg-2 col-xl-2">
+                                        <img
+                                          src="data:image/jpeg;base64,@Convert.ToBase64String(item.Product.ImageData)"
+                                          class="img-fluid rounded-3" alt="Cotton T-shirt">
+                                      </div>
+                                      <div class="col-md-3 col-lg-3 col-xl-3">
+                                        <p class="lead fw-normal mb-2">@item.Product.Name</p>
+                                        <p><span class="text-muted">Product#: </span>@item.ProductId</p>
+                                      </div>
+                                      <div class="col-md-3 col-lg-3 col-xl-2 d-flex">
+                                          <form asp-page-handler="UpdateQuantity" asp-route-cartId="@item.CartId" asp-route-productId="@item.ProductId" asp-route-quantity="@item.Quantity" asp-route-operation="decrease" method="post">
+                                                <button class="btn btn-link px-2"
+                                                  onclick="this.parentNode.querySelector('input[type=number]').stepDown()">
+                                                  <i class="fas fa-minus"></i>
+                                                </button>
+                                          </form>
+
+                                        <input id="form1" min="0" name="quantity" value="@item.Quantity" type="number"
+                                          class="form-control form-control-sm" />
+
+                                                  <form asp-page-handler="UpdateQuantity" asp-route-cartId="@item.CartId" asp-route-productId="@item.ProductId" asp-route-quantity="@item.Quantity" asp-route-operation="increase" method="post">
+                                                  <button class="btn btn-link px-2"
+                                                    onclick="this.parentNode.querySelector('input[type=number]').stepDown()">
+                                                    <i class="fas fa-plus"></i>
+                                                  </button>
+                                            </form>
+                                      </div>
+                                      <div class="col-md-3 col-lg-2 col-xl-2 offset-lg-1">
+                                                <h5 class="mb-0">$@item.Product.UnitPrice.ToString("F2")</h5>
+                                      </div>
+                                        <div class="col-md-1 col-lg-1 col-xl-1 text-end">
+                                            <form asp-page-handler="DeleteCartItem" asp-route-cartId="@item.CartId" asp-route-productId="@item.ProductId" method="post">
+                                                        <button type="submit" class="btn btn-link text-danger">
+                                                            <i class="fas fa-trash fa-lg"></i>
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                    </div>
+                                  </div>
+                                </div>
+
+                    }
+                }
+
+
+        <div class="card mb-5">
+          <div class="card-body p-4">
+
+            <div class="float-end">
+              <p class="mb-0 me-5 d-flex align-items-center">
+                <span class="small text-muted me-2">Order total:</span> <span
+                  class="lead fw-bold">$@Model.TotalPrice.ToString("F2")</span>
+              </p>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-end">
+          <button type="button" class="btn btn-light btn-lg me-2">
+              <a class="nav-link text-dark" asp-area="" asp-page="/Index">Continue Shopping</a>
+              </button>
+          <button type="button" class="btn btn-primary btn-lg">
+              @if (Model.CartProducts.Count > 0)
+              {
+                  <a class="nav-link text-light" asp-area="" asp-page="/ShoppingCart/Checkout">Go to Checkout</a>
+              }
+              else
+              {
+                      <a class="nav-link text-light" asp-area="" asp-page="">Go to Checkout</a>
+              }
+              </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+

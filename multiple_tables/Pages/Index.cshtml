@@ -13,28 +13,7 @@
     <title>Product Page</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
     <link href="~/css/carousel.css" rel="stylesheet">
-    <style>
-        .product-card {
-            margin-bottom: 20px;
-        }
-        .product-image {
-            max-width: 100%;
-            height: auto;
-        }
-
-        .product-name {
-            width: 100%;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-
-        .center-button {
-            display: flex;
-            justify-content: center;
-        }
-         <link href="carousel.css" rel="stylesheet">
-    </style>
+    <link href="~/css/productcard.css" rel="stylesheet">
 </head>
 <body>
 
@@ -93,33 +72,74 @@
 <div class="container mt-5">
     <div class="row">
 
-                @foreach (var item in Model.Products)
-                {
-                    <div class="col-md-3">
-                        <div class="card product-card">
-                            @if (item.ImageData != null)
-                            {
-                                <img src="data:image;base64,@Convert.ToBase64String(item.ImageData)" class="card-img-top product-image" alt="Product Image" />
-                            }
-                            else
-                            {
-                                <img src="path_to_default_image.jpg" class="card-img-top product-image" alt="Default Image" />
-                            }
-                            <div class="card-body">
-                                    <h5 class="card-title product-name">@item.Name</h5>
-                                <p class="card-text">$@item.UnitPrice</p>
-                                <div class="center-button">
-                                <form asp-page-handler="AddToCart" method="post" asp-route-productId="@item.ID">
-                                        <button class="btn btn-primary">Add to Cart</button>
+            @foreach (var item in Model.Products)
+            {
+                 @* <div class="col-md-3">
+                     <div class="card product-card">
+                         @if (item.ImageData != null)
+                             {
+                             <img src="data:image;base64,@Convert.ToBase64String(item.ImageData)" class="card-img-top product-image" alt="Product Image" />
+                         }
+                         else
+                             {
+                             <img src="path_to_default_image.jpg" class="card-img-top product-image" alt="Default Image" />
+                         }
+                         <div class="card-body">
+                                 <h5 class="card-title product-name">@item.Name</h5>
+                             <p class="card-text">$@item.UnitPrice</p>
+                             <div class="center-button">
+                             <form asp-page-handler="AddToCart" method="post" asp-route-productId="@item.ID">
+                                     <button class="btn btn-primary">Add to Cart</button>
+                             </form>
+                         </div>
+                     </div>
+                 </div>
+                 </div> *@
+
+                            <div class="col-md-3 col-sm-6">
+                <div class="product-grid">
+                    <div class="product-image">
+                        <a class="image">
+                                <img src="data:image;base64,@Convert.ToBase64String(item.ImageData)" class="img-1" alt="Product Image" />
+                                <img src="data:image;base64,@Convert.ToBase64String(item.ImageData)" class="img-2" alt="Product Image" />
+                        </a>
+                        <ul class="product-links">
+                                <li>
+                                    <form asp-page-handler="AddToWishlist" method="post" asp-route-productId="@item.ID">
+                                        <button type="submit">
+                                            <i class="fa fa-heart"></i>
+                                        </button>
                                     </form>
-                                </div>
-                            </div>
-                        </div>
+                                </li>
+                            
+                            <li>
+                                <form asp-page-handler="AddToCart" method="post" asp-route-productId="@item.ID">
+                                    <button type="submit">
+                                        <i class="fa fa-shopping-cart"></i>
+                                    </button>
+                                </form>
+                            </li>
+                        </ul>
                     </div>
-                }
+                    <div class="product-content">
+                        <ul class="rating">
+                            <li class="fas fa-star"></li>
+                            <li class="fas fa-star"></li>
+                            <li class="fas fa-star"></li>
+                            <li class="fas fa-star"></li>
+                            <li class="fas fa-star disable"></li>
+                            <li class="disable">(1 reviews)</li>
+                        </ul>
+                                <h5 class="card-title product-name">@item.Name</h5>
+                                 <p class="card-text">$@item.UnitPrice</p>
+                    </div>
+                </div>
+            </div>
+            }
     </div>
 </div>
 
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>

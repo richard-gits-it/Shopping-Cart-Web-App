@@ -1,0 +1,147 @@
+﻿@page
+@model multiple_tables.Pages.ShoppingCart.CheckoutModel
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+
+@{
+    ViewData["Title"] = "Checkout";
+}
+
+<section class="h-100">
+  <div class="container h-100 py-5">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col-10">
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h3 class="fw-normal mb-0 text-black">Checkout</h3>
+        </div>
+                @if (SignInManager.IsSignedIn(User))
+                {
+                    <div class="card rounded-3 mb-3" style="font-size: 85%; padding: 0.5rem;">
+                    @foreach (var item in Model.CartProducts)
+                    {
+                          <div class="card-body p-2">
+                            <div class="row d-flex justify-content-between align-items-center" style="margin-bottom: 0.5rem;">
+                              <div class="col-md-1 col-lg-1 col-xl-1">
+                                <img src="data:image/jpeg;base64,@Convert.ToBase64String(item.Product.ImageData)" class="img-fluid rounded-3" alt="Cotton T-shirt">
+                              </div>
+                              <div class="col-md-2 col-lg-2 col-xl-2">
+                                <p class="lead fw-normal mb-1">@item.Product.Name</p>
+                                <p><span class="text-muted">Product#: </span>@item.ProductId</p>
+                              </div>
+                              <div class="col-md-2 col-lg-1 col-xl-1 offset-lg-1">
+                                <h7 class="mb-0"><span class="text-muted">QTY: </span>@item.Quantity</h7>
+                              </div>
+                              <div class="col-md-3 col-lg-2 col-xl-2">
+                                <h5 class="mb-0">$@item.Product.UnitPrice.ToString("F2")</h5>
+                              </div>
+                              <div class="col-md-2 col-lg-1 col-xl-1 text-end">
+                                <form asp-page-handler="DeleteCartItem" asp-route-cartId="@item.CartId" asp-route-productId="@item.ProductId" method="post">
+                                  <button type="submit" class="btn btn-link text-danger">
+                                    <i class="fas fa-trash fa-lg"></i>
+                                  </button>
+                                </form>
+                              </div>
+                            </div>
+                          </div>
+
+
+                    }
+                    </div>
+                }
+
+
+        <div class="card mb-3">
+          <div class="card-body p-4">
+
+            <div class="row">
+              <div class="col">
+                <p class="mb-0 d-flex align-items-center">
+                  <span class="small text-muted me-2">Merchandise:</span>
+                  <span class="lead fw-normal ms-auto">$@Model.MerchandiseTotal.ToString("F2")</span>
+                </p>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col">
+                <p class="mb-0 d-flex align-items-center">
+                  <span class="small text-muted me-2">Estimated shipping:</span>
+                  <span class="lead fw-normal ms-auto">$@Model.ShippingCost.ToString("F2")</span>
+                </p>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col">
+                <p class="mb-0 d-flex align-items-center">
+                  <span class="small text-muted me-2">Federal tax GST:</span>
+                  <span class="lead fw-normal ms-auto">$@Model.FederalTaxGST.ToString("F2")</span>
+                </p>
+              </div>
+            </div>
+            <div class="border-top mt-3 pt-3">
+              <div class="row">
+                <div class="col">
+                  <p class="mb-0 d-flex align-items-center">
+                    <span class="small text-muted me-2">Total:</span>
+                    <span class="lead fw-bold ms-auto">$@Model.TotalPrice.ToString("F2")</span>
+                  </p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="card mb-3">
+            <div class="card-body p-4">
+              <h5 class="fw-normal mb-3">Payment</h5>
+              <form>
+                <div class="row">
+                  <div class="col">
+                    <div class="form-floating mb-3">
+                      <input type="text" class="form-control" id="floatingInput" placeholder="Name on card">
+                      <label for="floatingInput">Name on card</label>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col">
+                    <div class="form-floating mb-3">
+                      <input type="text" class="form-control" id="floatingInput" placeholder="Card number">
+                      <label for="floatingInput">Card number</label>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-4">
+                    <div class="form-floating mb-3">
+                      <input type="text" class="form-control" id="floatingInput" placeholder="Expiration date">
+                      <label for="floatingInput">Expiration date</label>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-floating mb-3">
+                      <input type="text" class="form-control" id="floatingInput" placeholder="CVV">
+                      <label for="floatingInput">CVV</label>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+        </div>
+
+
+        <div class="d-flex justify-content-end">
+          <button type="button" class="btn btn-light btn-lg me-2">
+              <a class="nav-link text-dark" asp-area="" asp-page="/ShoppingCart/index">Go Back</a>
+              </button>
+
+              <button type="button" class="btn btn-primary btn-lg">
+              <a class="nav-link text-light" asp-area="" asp-page="/ShoppingCart/index">Checkout</a>
+              </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>

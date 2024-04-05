@@ -83,5 +83,7 @@ namespace multiple_tables.Pages
             // Redirect to index page after adding the product to the cart
             return RedirectToPage("/Index");
         }
+
+        
     }
 }

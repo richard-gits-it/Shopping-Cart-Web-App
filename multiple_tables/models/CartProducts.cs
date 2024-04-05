@@ -13,6 +13,13 @@ namespace multiple_tables.models
         public Products Product { get; set; } = default!;
         public int Quantity { get; set; }
 
-
+        //get total price of product
+        public double TotalPrice
+        {
+            get
+            {
+                return (double)Product.UnitPrice * Quantity;
+            }
+        }
     }
 }
