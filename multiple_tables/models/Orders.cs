@@ -3,7 +3,7 @@
     public class Orders
     {
         public int Id { get; set; }
-        public Customers Customer { get; set; } = default!;
+        public Customers Customer { get; set; }
         public DateTime OrderDate { get; set; }
         public DateTime RequiredDate { get; set; }
         public DateTime ShippedDate { get; set; }
