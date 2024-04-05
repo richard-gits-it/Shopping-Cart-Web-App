@@ -32,9 +32,5 @@ namespace multiple_tables.models
         [Required(ErrorMessage = "Email is required")]
         [EmailAddress(ErrorMessage = "Invalid Email Address")]
         public string Email { get; set; }
-
-        [Required(ErrorMessage = "Phone Number is required")]
-        [RegularExpression(@"^\+(?:[0-9] ?){6,14}[0-9]$", ErrorMessage = "Invalid Phone Number")]
-        public string PhoneNumber { get; set; }
     }
 }
