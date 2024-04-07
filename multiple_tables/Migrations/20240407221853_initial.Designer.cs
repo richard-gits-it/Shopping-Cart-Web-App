@@ -12,8 +12,8 @@ using multiple_tables.Data;
 namespace multiple_tables.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240407042657_init3")]
-    partial class init3
+    [Migration("20240407221853_initial")]
+    partial class initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -324,7 +324,7 @@ namespace multiple_tables.Migrations
 
                     b.Property<string>("CustomerId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
@@ -373,8 +373,6 @@ namespace multiple_tables.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CustomerId");
-
                     b.ToTable("Orders");
                 });
 
@@ -400,6 +398,10 @@ namespace multiple_tables.Migrations
                         .IsRequired()
                         .HasColumnType("varbinary(max)");
 
+                    b.Property<byte[]>("ImageData2")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -415,6 +417,21 @@ namespace multiple_tables.Migrations
                     b.HasIndex("CategoryId");
 
                     b.ToTable("Products");
+                });
+
+            modelBuilder.Entity("multiple_tables.models.Wishlists", b =>
+                {
+                    b.Property<string>("CustomerID")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.HasKey("CustomerID", "ProductId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("Wishlist");
                 });
 
             modelBuilder.Entity("multiple_tables.models.Customers", b =>
@@ -524,17 +541,6 @@ namespace multiple_tables.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("multiple_tables.models.Orders", b =>
-                {
-                    b.HasOne("multiple_tables.models.Customers", "Customer")
-                        .WithMany()
-                        .HasForeignKey("CustomerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Customer");
-                });
-
             modelBuilder.Entity("multiple_tables.models.Products", b =>
                 {
                     b.HasOne("multiple_tables.models.Categories", "Category")
@@ -544,6 +550,25 @@ namespace multiple_tables.Migrations
                         .IsRequired();
 
                     b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("multiple_tables.models.Wishlists", b =>
+                {
+                    b.HasOne("multiple_tables.models.Customers", "Customer")
+                        .WithMany()
+                        .HasForeignKey("CustomerID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("multiple_tables.models.Products", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Customer");
+
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("multiple_tables.models.Cart", b =>

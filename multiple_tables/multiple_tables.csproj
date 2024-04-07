@@ -20,7 +20,31 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="images\" />
+    <Folder Include="wwwroot\images\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\images\carousel-hamilton.jpg" />
+    <None Include="wwwroot\images\carousel-tissot.jpg" />
+    <None Include="wwwroot\images\ham-1-1.jpg" />
+    <None Include="wwwroot\images\ham-1-2.jpg" />
+    <None Include="wwwroot\images\ham-2-1.jpg" />
+    <None Include="wwwroot\images\ham-2-2.jpg" />
+    <None Include="wwwroot\images\ham3-1.jpg" />
+    <None Include="wwwroot\images\ham3-2.jpg" />
+    <None Include="wwwroot\images\mid-1-1.jpg" />
+    <None Include="wwwroot\images\mid-1-2.jpg" />
+    <None Include="wwwroot\images\mid2-1.jpg" />
+    <None Include="wwwroot\images\mid2-2.jpg" />
+    <None Include="wwwroot\images\products-sample.txt" />
+    <None Include="wwwroot\images\tiss1_1.jpg" />
+    <None Include="wwwroot\images\tiss1_2.jpg" />
+    <None Include="wwwroot\images\tiss2-1.jpg" />
+    <None Include="wwwroot\images\tiss2-2.jpg" />
+    <None Include="wwwroot\images\tiss3-1.jpg" />
+    <None Include="wwwroot\images\tiss3-2.jpg" />
+    <None Include="wwwroot\images\tiss4-1.jpg" />
+    <None Include="wwwroot\images\tiss4-2.jpg" />
   </ItemGroup>
 
 </Project>

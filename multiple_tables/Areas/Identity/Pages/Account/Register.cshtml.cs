@@ -132,8 +132,8 @@ namespace multiple_tables.Areas.Identity.Pages.Account
                     if (!await _roleManager.RoleExistsAsync("User"))
                         await _roleManager.CreateAsync(new IdentityRole("User"));
 
-                    await _userManager.AddToRoleAsync(user, "User");
-                    //await _userManager.AddToRoleAsync(user, "Admin"); // TERMPORARY
+                    //await _userManager.AddToRoleAsync(user, "User");
+                    await _userManager.AddToRoleAsync(user, "Admin"); // TERMPORARY
 
                     _logger.LogInformation("User created a new account with password.");
 
