@@ -79,12 +79,21 @@
                         <div class="product-image">
                             <a class="image">
                                 <img src="data:image;base64,@Convert.ToBase64String(item.ImageData)" class="img-1" alt="Product Image" />
-                                <img src="data:image;base64,@Convert.ToBase64String(item.ImageData)" class="img-2" alt="Product Image" />
+                                <img src="data:image;base64,@Convert.ToBase64String(item.ImageData2)" class="img-2" alt="Product Image" />
                             </a>
                             <ul class="product-links">
                                 <li>
                                             @{
-                                                var isInWishlist = Model.Wishlist.Any(w => w.ProductId == item.ID);
+                                                var isInWishlist = false;
+                                                try
+                                                {
+                                                    isInWishlist = Model.Wishlist.Any(w => w.ProductId == item.ID);
+                                                }
+                                                catch (Exception ex)
+                                                {
+                                                    // Handle the exception
+                                                    Console.WriteLine($"An error occurred: {ex.Message}");
+                                                }
                                             }
                                     <form asp-page-handler="ToggleWishlist" method="post" asp-route-productId="@item.ID">
                                         <button type="submit">

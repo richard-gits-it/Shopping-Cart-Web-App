@@ -27,6 +27,8 @@ namespace multiple_tables.Pages.ProductMaster
 
         [BindProperty]
         public IFormFile ImageFile { get; set; }
+        [BindProperty]
+        public IFormFile ImageFile2 { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -49,10 +51,10 @@ namespace multiple_tables.Pages.ProductMaster
         // For more details, see https://aka.ms/RazorPagesCRUD.
         public async Task<IActionResult> OnPostAsync()
         {
-            //if (_context.Products == null || Products == null || ImageFile == null)
-            //{
-            //    return Page();
-            //}
+            if (_context.Products == null || Products == null || ImageFile == null)
+            {
+                return Page();
+            }
 
             _context.Attach(Products).State = EntityState.Modified;
 
@@ -62,6 +64,14 @@ namespace multiple_tables.Pages.ProductMaster
                 {
                     await ImageFile.CopyToAsync(memoryStream);
                     Products.ImageData = memoryStream.ToArray();
+                }  
+            }
+            if (ImageFile2 != null)
+            {
+                using (var memoryStream = new MemoryStream())
+                {
+                    await ImageFile2.CopyToAsync(memoryStream);
+                    Products.ImageData2 = memoryStream.ToArray();
                 }  
             }
 
