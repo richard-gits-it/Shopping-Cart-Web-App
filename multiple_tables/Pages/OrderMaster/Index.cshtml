@@ -1,0 +1,46 @@
+﻿@page
+@model multiple_tables.Pages.OrderMaster.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h3 class="fw-normal text-black">Order Master</h3>
+<div class="table-responsive">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Order ID</th>
+                <th>Customer ID</th>
+                <th>Status</th>
+                <th>Personal Info</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Orders)
+            {
+                        <tr>
+                            <td>@Html.DisplayFor(modelItem => item.Id)</td>
+                            <td>@Html.DisplayFor(modelItem => item.CustomerId)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Status)</td>
+                            <td>
+                                <div>
+                                    <div>@Html.DisplayFor(modelItem => item.FirstName) @Html.DisplayFor(modelItem => item.LastName)</div>
+                                    <div>@Html.DisplayFor(modelItem => item.ShipAddress)</div>
+                                    <div>@Html.DisplayFor(modelItem => item.ShipCity), @Html.DisplayFor(modelItem => item.ShipProvince) @Html.DisplayFor(modelItem => item.ShipPostalCode)</div>
+                                    <div>@Html.DisplayFor(modelItem => item.ShipCountry)</div>
+                                    <div>@Html.DisplayFor(modelItem => item.ShipPhone)</div>
+                                    <div>@Html.DisplayFor(modelItem => item.ShipEmail)</div>
+                                </div>
+                            </td>
+                            <td>
+                                <form method="post" asp-page-handler="Details" asp-route-id="@item.Id">
+                                    <button type="submit" class="btn btn-secondary">Details</button>
+                                </form>
+                            </td>
+                        </tr>
+            }
+        </tbody>
+    </table>
+</div>

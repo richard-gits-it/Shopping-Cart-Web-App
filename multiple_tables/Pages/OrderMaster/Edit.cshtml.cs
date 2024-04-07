@@ -10,9 +10,10 @@ using Microsoft.EntityFrameworkCore;
 using multiple_tables.Data;
 using multiple_tables.models;
 
-namespace multiple_tables.Pages.CategoryMaster
+namespace multiple_tables.Pages.OrderMaster
 {
     [Authorize(Roles = "Admin")]
+
     public class EditModel : PageModel
     {
         private readonly multiple_tables.Data.ApplicationDbContext _context;
@@ -23,21 +24,21 @@ namespace multiple_tables.Pages.CategoryMaster
         }
 
         [BindProperty]
-        public Categories Categories { get; set; } = default!;
+        public Orders Orders { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
-            if (id == null || _context.Categories == null)
+            if (id == null || _context.Orders == null)
             {
                 return NotFound();
             }
 
-            var categories =  await _context.Categories.FirstOrDefaultAsync(m => m.Id == id);
-            if (categories == null)
+            var orders =  await _context.Orders.FirstOrDefaultAsync(m => m.Id == id);
+            if (orders == null)
             {
                 return NotFound();
             }
-            Categories = categories;
+            Orders = orders;
             return Page();
         }
 
@@ -45,12 +46,12 @@ namespace multiple_tables.Pages.CategoryMaster
         // For more details, see https://aka.ms/RazorPagesCRUD.
         public async Task<IActionResult> OnPostAsync()
         {
-            //if (!ModelState.IsValid)
-            //{
-            //    return Page();
-            //}
+            if (!ModelState.IsValid)
+            {
+                return Page();
+            }
 
-            _context.Attach(Categories).State = EntityState.Modified;
+            _context.Attach(Orders).State = EntityState.Modified;
 
             try
             {
@@ -58,7 +59,7 @@ namespace multiple_tables.Pages.CategoryMaster
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!CategoriesExists(Categories.Id))
+                if (!OrdersExists(Orders.Id))
                 {
                     return NotFound();
                 }
@@ -71,9 +72,9 @@ namespace multiple_tables.Pages.CategoryMaster
             return RedirectToPage("./Index");
         }
 
-        private bool CategoriesExists(int id)
+        private bool OrdersExists(int id)
         {
-          return (_context.Categories?.Any(e => e.Id == id)).GetValueOrDefault();
+          return (_context.Orders?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

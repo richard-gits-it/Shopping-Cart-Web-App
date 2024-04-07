@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using multiple_tables.Data;
 using multiple_tables.models;
 
-namespace multiple_tables.Pages.ProductMaster
+namespace multiple_tables.Pages.OrderMaster
 {
     [Authorize(Roles = "Admin")]
     public class IndexModel : PageModel
@@ -21,15 +21,18 @@ namespace multiple_tables.Pages.ProductMaster
             _context = context;
         }
 
-        public IList<Products> Products { get;set; } = default!;
+        public IList<Orders> Orders { get;set; } = default!;
 
         public async Task OnGetAsync()
         {
-            if (_context.Products != null)
+            if (_context.Orders != null)
             {
-                Products = await _context.Products
-                .Include(p => p.Category).ToListAsync();
+                Orders = await _context.Orders.ToListAsync();
             }
+        }
+        public IActionResult OnPostDetails(int id)
+        {
+            return RedirectToPage("/OrderHistory/Details", new { orderId = id });
         }
     }
 }

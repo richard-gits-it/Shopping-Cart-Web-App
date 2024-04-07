@@ -1,0 +1,128 @@
+﻿@page
+@model multiple_tables.Pages.OrderHistory.DetailsModel
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<section class="h-100">
+  <div class="container h-100 py-5">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col-10">
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h3 class="fw-normal mb-0 text-black">Order Details</h3>
+        </div>
+                @if (SignInManager.IsSignedIn(User))
+                {
+                    <div class="card rounded-3 mb-3" style="font-size: 85%; padding: 0.5rem;">
+                    @foreach (var item in Model.OrderDetails)
+                    {
+                          <div class="card-body p-2">
+                            <div class="row d-flex justify-content-between align-items-center" style="margin-bottom: 0.5rem;">
+                              <div class="col-md-1 col-lg-1 col-xl-1">
+                                <img src="data:image/jpeg;base64,@Convert.ToBase64String(item.Product.ImageData)" class="img-fluid rounded-3">
+                              </div>
+                              <div class="col-md-2 col-lg-2 col-xl-2">
+                                <p class="lead fw-normal mb-1">@item.Product.Name</p>
+                                <p><span class="text-muted">Product#: </span>@item.ProductId</p>
+                              </div>
+                              <div class="col-md-2 col-lg-1 col-xl-1 offset-lg-1">
+                                <h7 class="mb-0"><span class="text-muted">QTY: </span>@item.Quantity</h7>
+                              </div>
+                              <div class="col-md-3 col-lg-2 col-xl-2">
+                                <h5 class="mb-0">$@item.Product.UnitPrice.ToString("F2")</h5>
+                              </div>
+                            </div>
+                          </div>
+
+
+                    }
+                    </div>
+                }
+
+
+                <!-- Shipping details section -->
+        <div class="card mb-3">
+            <div class="card-body p-4">
+                <h4 class="card-title">Shipping Details</h4>
+                <div class="row">
+                    <div class="col-md-6">
+                        <p class="mb-2"><strong>Recipient Name:</strong> @Model.Order.FirstName @Model.Order.LastName</p>
+                        <p class="mb-2"><strong>Address:</strong> @Model.Order.ShipAddress</p>
+                        <p class="mb-2"><strong>City:</strong> @Model.Order.ShipCity</p>
+                        <p class="mb-2"><strong>Province:</strong> @Model.Order.ShipProvince</p>
+                        <p class="mb-2"><strong>Postal Code:</strong> @Model.Order.ShipPostalCode</p>
+                        <p class="mb-2"><strong>Country:</strong> @Model.Order.ShipCountry</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p class="mb-2"><strong>Phone:</strong> @Model.Order.ShipPhone</p>
+                        <p class="mb-2"><strong>Email:</strong> @Model.Order.ShipEmail</p>
+                        <p class="mb-2"><strong>Shipping Status:</strong> @Model.Order.Status</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <div class="card mb-3">
+          <div class="card-body p-4">
+
+            <div class="row">
+              <div class="col">
+                <p class="mb-0 d-flex align-items-center">
+                  <span class="small text-muted me-2">Merchandise:</span>
+                  <span class="lead fw-normal ms-auto">$@Model.MerchandiseTotal.ToString("F2")</span>
+                </p>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col">
+                <p class="mb-0 d-flex align-items-center">
+                  <span class="small text-muted me-2">Estimated shipping:</span>
+                  <span class="lead fw-normal ms-auto">$@Model.ShippingCost.ToString("F2")</span>
+                </p>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col">
+                <p class="mb-0 d-flex align-items-center">
+                  <span class="small text-muted me-2">Federal tax GST:</span>
+                  <span class="lead fw-normal ms-auto">$@Model.FederalTaxGST.ToString("F2")</span>
+                </p>
+              </div>
+            </div>
+            <div class="border-top mt-3 pt-3">
+              <div class="row">
+                <div class="col">
+                  <p class="mb-0 d-flex align-items-center">
+                    <span class="small text-muted me-2">Total:</span>
+                    <span class="lead fw-bold ms-auto">$@Model.TotalPrice.ToString("F2")</span>
+                  </p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+
+        <div class="d-flex justify-content-end">
+            <button type="submit" class="btn btn-light btn-lg me-2">
+                <a class="nav-link text-dark" asp-area="" asp-page="./index">Go Back</a>
+            </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

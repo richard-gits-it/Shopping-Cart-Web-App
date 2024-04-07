@@ -12,6 +12,7 @@ namespace multiple_tables.Data
         }
         public DbSet<multiple_tables.models.Products> Products { get; set; } = default!;
         public DbSet<multiple_tables.models.Customers> Customer { get; set; } = default!;
+        public DbSet<multiple_tables.models.Wishlists> Wishlist { get; set; } = default!;
         public DbSet<multiple_tables.models.Orders> Orders { get; set; } = default!;
         public DbSet<multiple_tables.models.OrderDetails> OrderDetails { get; set; } = default!;
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -23,6 +24,9 @@ namespace multiple_tables.Data
 
             modelBuilder.Entity<CartProducts>()
                 .HasKey(cp => new { cp.CartId, cp.ProductId });
+
+            modelBuilder.Entity<Wishlists>()
+                .HasKey(cp => new { cp.CustomerID, cp.ProductId });
 
             modelBuilder.Entity<Orders>()
                 .HasMany(o => o.OrderDetails)

@@ -294,7 +294,7 @@ namespace multiple_tables.Migrations
                     b.ToTable("Categories");
                 });
 
-            modelBuilder.Entity("multiple_tables.models.Customers", b =>
+            modelBuilder.Entity("multiple_tables.models.Customer", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -562,7 +562,7 @@ namespace multiple_tables.Migrations
 
             modelBuilder.Entity("multiple_tables.models.Orders", b =>
                 {
-                    b.HasOne("multiple_tables.models.Customers", "Customer")
+                    b.HasOne("multiple_tables.models.Customer", "Customer")
                         .WithMany()
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Cascade)

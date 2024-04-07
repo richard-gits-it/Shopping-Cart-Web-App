@@ -9,9 +9,10 @@ using Microsoft.EntityFrameworkCore;
 using multiple_tables.Data;
 using multiple_tables.models;
 
-namespace multiple_tables.Pages.ProductMaster
+namespace multiple_tables.Pages.OrderMaster
 {
     [Authorize(Roles = "Admin")]
+
     public class DeleteModel : PageModel
     {
         private readonly multiple_tables.Data.ApplicationDbContext _context;
@@ -22,40 +23,40 @@ namespace multiple_tables.Pages.ProductMaster
         }
 
         [BindProperty]
-      public Products Products { get; set; } = default!;
+      public Orders Orders { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
-            if (id == null || _context.Products == null)
+            if (id == null || _context.Orders == null)
             {
                 return NotFound();
             }
 
-            var products = await _context.Products.FirstOrDefaultAsync(m => m.ID == id);
+            var orders = await _context.Orders.FirstOrDefaultAsync(m => m.Id == id);
 
-            if (products == null)
+            if (orders == null)
             {
                 return NotFound();
             }
             else 
             {
-                Products = products;
+                Orders = orders;
             }
             return Page();
         }
 
         public async Task<IActionResult> OnPostAsync(int? id)
         {
-            if (id == null || _context.Products == null)
+            if (id == null || _context.Orders == null)
             {
                 return NotFound();
             }
-            var products = await _context.Products.FindAsync(id);
+            var orders = await _context.Orders.FindAsync(id);
 
-            if (products != null)
+            if (orders != null)
             {
-                Products = products;
-                _context.Products.Remove(Products);
+                Orders = orders;
+                _context.Orders.Remove(Orders);
                 await _context.SaveChangesAsync();
             }
 

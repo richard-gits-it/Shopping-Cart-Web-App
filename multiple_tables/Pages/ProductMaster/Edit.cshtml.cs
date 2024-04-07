@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -11,6 +12,7 @@ using multiple_tables.models;
 
 namespace multiple_tables.Pages.ProductMaster
 {
+    [Authorize(Roles = "Admin")]
     public class EditModel : PageModel
     {
         private readonly multiple_tables.Data.ApplicationDbContext _context;

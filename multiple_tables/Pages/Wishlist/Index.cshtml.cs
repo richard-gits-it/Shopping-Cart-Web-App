@@ -1,13 +1,17 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using multiple_tables.Data;
 using multiple_tables.models;
-using System.Drawing;
-using System.Security.Claims;
-using System.Text.Json;
 
-namespace multiple_tables.Pages
+namespace multiple_tables.Pages.Wishlist
 {
     public class IndexModel : PageModel
     {
@@ -18,16 +22,10 @@ namespace multiple_tables.Pages
             _context = context;
         }
 
-        public IList<Products> Products { get; set; } = default!;
         public IList<Wishlists> Wishlist { get; set; } = default!;
 
         public async Task OnGetAsync()
         {
-            if (_context.Products != null)
-            {
-                Products = await _context.Products
-                .Include(p => p.Category).ToListAsync();
-            }
             //populate wishlist
             if (User.Identity.IsAuthenticated)
             {
@@ -37,6 +35,7 @@ namespace multiple_tables.Pages
                     .Where(w => w.CustomerID == userId)
                     .ToListAsync();
             }
+
         }
 
         public byte[] ImageToByteArray(Image image)
@@ -48,7 +47,7 @@ namespace multiple_tables.Pages
             }
         }
 
-        //onpost ToggleWishlist, remove if already in wishlist
+        //toggle favorite
         public async Task<IActionResult> OnPostToggleWishlistAsync(int productId)
         {
             if (User.Identity.IsAuthenticated)
@@ -72,10 +71,8 @@ namespace multiple_tables.Pages
             {
                 return RedirectToPage("/Account/Login", new { area = "Identity" });
             }
-            return RedirectToPage("/Index");
+            return RedirectToPage("./Index");
         }
-
-
 
         public async Task<IActionResult> OnPostAddToCartAsync(int productId)
         {
@@ -119,9 +116,10 @@ namespace multiple_tables.Pages
             }
 
             // Redirect to index page after adding the product to the cart
-            return RedirectToPage("/Index");
+            return RedirectToPage("./Index");
         }
 
-        
+
     }
 }
+

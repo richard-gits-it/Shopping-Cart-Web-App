@@ -18,11 +18,14 @@ namespace multiple_tables.Pages.ShoppingCart
         private readonly multiple_tables.Data.ApplicationDbContext _context;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
+
         public CheckoutModel(UserManager<IdentityUser> userManager, multiple_tables.Data.ApplicationDbContext context, IHttpContextAccessor httpContextAccessor)
         {
             _userManager = userManager;
             _context = context;
             _httpContextAccessor = httpContextAccessor;
+            //initialize order
+            Order = new Orders();
         }
 
         public IList<CartProducts> CartProducts { get; set; } = default!;
@@ -31,6 +34,14 @@ namespace multiple_tables.Pages.ShoppingCart
         //property for gst calculation 
         public double FederalTaxGST => (MerchandiseTotal + ShippingCost) * 0.05;
         public double TotalPrice => MerchandiseTotal + ShippingCost + FederalTaxGST;
+
+
+        [BindProperty]
+        public Orders Order { get; set; } = default!;
+
+        [BindProperty]
+        public Payment Payment { get; set; }
+
 
         public async Task<IActionResult> OnGetAsync()
         {
@@ -76,11 +87,28 @@ namespace multiple_tables.Pages.ShoppingCart
                     // Redirect to the shopping cart page if no cart products exist
                     return RedirectToPage("/ShoppingCart/Index");
                 }
+
+                // Populate CustomerId
+                Order.CustomerId = userId;
+
+                // Load the order details entities
+                Order.OrderDetails = CartProducts.Select(cp => new OrderDetails
+                {
+                    Product = cp.Product,
+                    UnitPrice = cp.Product.UnitPrice,
+                    Quantity = cp.Quantity,
+                    Discount = 0
+                }).ToList();
+
+                // Store Order object in session as a serialized JSON string
+                _httpContextAccessor.HttpContext.Session.SetString("Order", System.Text.Json.JsonSerializer.Serialize(Order));
+
             }
 
             // Return the page
             return Page();
         }
+
 
         public async Task<IActionResult> OnPostDeleteCartItemAsync(int cartId, int productId)
         {
@@ -96,40 +124,125 @@ namespace multiple_tables.Pages.ShoppingCart
 
         }
 
-        public async Task<IActionResult> OnPostCheckoutAsync()
+        public IActionResult OnPost()
         {
-            throw new NotImplementedException();
+
+            //if (!ModelState.IsValid)
+            //{
+            //    //repopulate CartProducts if ModelState is not valid
+            //    var _userId = _userManager.GetUserId(User);
+            //    if (_userId != null)
+            //    {
+            //        var userCart = _context.Cart
+            //            .Include(c => c.CartProducts)
+            //                .ThenInclude(cp => cp.Product)
+            //            .FirstOrDefault(c => c.UserId == _userId);
+
+            //        if (userCart != null && userCart.CartProducts != null)
+            //        {
+            //            CartProducts = userCart.CartProducts.ToList();
+            //            MerchandiseTotal = CartProducts.Sum(cp => cp.TotalPrice);
+            //        }
+            //        else
+            //        {
+            //            // Handle the case where the user's cart or cart products are null
+            //            // Redirect or handle it according to your application's logic
+            //            return RedirectToPage("/ShoppingCart/Index");
+            //        }
+            //    }
+            //    else
+            //    {
+            //        // Handle the case where userId is null
+            //        // Redirect or handle it according to your application's logic
+            //        return RedirectToPage("/Account/Login", new { area = "Identity" });
+            //    }
+
+            //    // Return the page with the updated ModelState
+            //    return Page();
+            //}
+
+            // Get user id
+            var userId = _userManager.GetUserId(User);
+
+            // Check if user id is not null
+            if (userId != null)
+            {
+                // Retrieve the user's cart including associated products
+                var userCart = _context.Cart
+                    .Include(c => c.CartProducts)
+                        .ThenInclude(cp => cp.Product)
+                    .FirstOrDefault(c => c.UserId == userId);
+
+                // If user's cart doesn't exist, create a new one
+                if (userCart == null)
+                {
+                    var newCart = new Cart { UserId = userId };
+                    _context.Cart.Add(newCart);
+                    _context.SaveChanges();
+
+                    userCart = newCart;
+                }
+
+                // Check if cart products exist
+                if (userCart.CartProducts != null)
+                {
+                    CartProducts = userCart.CartProducts.ToList();
+
+                    // Calculate total price of the cart
+                    MerchandiseTotal = CartProducts.Sum(cp => cp.TotalPrice);
+                }
+                else
+                {
+                    // Redirect to the shopping cart page if no cart products exist
+                    return RedirectToPage("/ShoppingCart/Index");
+                }
+
+                //save order details
+                var order = new Orders
+                {
+                    CustomerId = userId,
+                    OrderDate = DateTime.Now,
+                    RequiredDate = DateTime.Now.AddDays(7),
+                    ShippedDate = DateTime.Now.AddDays(2),
+                    FirstName = Order.FirstName,
+                    LastName = Order.LastName,
+                    ShipAddress = Order.ShipAddress,
+                    ShipCity = Order.ShipCity,
+                    ShipProvince = Order.ShipProvince,
+                    ShipPostalCode = Order.ShipPostalCode,
+                    ShipCountry = Order.ShipCountry,
+                    ShipPhone = Order.ShipPhone,
+                    ShipEmail = Order.ShipEmail
+                };
+                //add order to the database
+                _context.Orders.Add(order);
+                _context.SaveChanges();
+
+                //add order details to the database
+                foreach (var cartProduct in CartProducts)
+                {
+                    var orderDetails = new OrderDetails
+                    {
+                        Order = order,
+                        Product = cartProduct.Product,
+                        UnitPrice = cartProduct.Product.UnitPrice,
+                        Quantity = cartProduct.Quantity,
+                        Discount = 0
+                    };
+                    _context.OrderDetails.Add(orderDetails);
+                }
+                _context.SaveChanges();
+
+                // Clear cart
+                _context.CartProducts.RemoveRange(CartProducts);
+                _context.SaveChanges();
+
+                // Redirect to the order confirmation page with the order id
+                return RedirectToPage("/ShoppingCart/OrderConfirmation", new { orderId = order.Id, customerName = order.FirstName + " " + order.LastName });
+            }
+
+            return RedirectToPage("/Account/Login", new { area = "Identity" });
         }
 
-        public int Id { get; set; }
-
-        [Required(ErrorMessage = "First Name is required")]
-        public string FirstName { get; set; }
-
-        [Required(ErrorMessage = "Last Name is required")]
-        public string LastName { get; set; }
-
-        [Required(ErrorMessage = "Address is required")]
-        public string Address { get; set; }
-
-        [Required(ErrorMessage = "City is required")]
-        public string City { get; set; }
-        [Required(ErrorMessage = "Province is required")]
-        public string Province { get; set; }
-
-        [Required(ErrorMessage = "Postal Code is required")]
-        [RegularExpression(@"^\d{5}(?:[-\s]\d{4})?$", ErrorMessage = "Invalid Postal Code")]
-        public string PostalCode { get; set; }
-
-        [Required(ErrorMessage = "Country is required")]
-        public string Country { get; set; }
-
-        [Required(ErrorMessage = "Phone is required")]
-        [RegularExpression(@"^\+(?:[0-9] ?){6,14}[0-9]$", ErrorMessage = "Invalid Phone Number")]
-        public string Phone { get; set; }
-
-        [Required(ErrorMessage = "Email is required")]
-        [EmailAddress(ErrorMessage = "Invalid Email Address")]
-        public string Email { get; set; }
     }
 }

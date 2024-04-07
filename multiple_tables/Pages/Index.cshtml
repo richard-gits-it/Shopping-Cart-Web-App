@@ -74,67 +74,54 @@
 
             @foreach (var item in Model.Products)
             {
-                 @* <div class="col-md-3">
-                     <div class="card product-card">
-                         @if (item.ImageData != null)
-                             {
-                             <img src="data:image;base64,@Convert.ToBase64String(item.ImageData)" class="card-img-top product-image" alt="Product Image" />
-                         }
-                         else
-                             {
-                             <img src="path_to_default_image.jpg" class="card-img-top product-image" alt="Default Image" />
-                         }
-                         <div class="card-body">
-                                 <h5 class="card-title product-name">@item.Name</h5>
-                             <p class="card-text">$@item.UnitPrice</p>
-                             <div class="center-button">
-                             <form asp-page-handler="AddToCart" method="post" asp-route-productId="@item.ID">
-                                     <button class="btn btn-primary">Add to Cart</button>
-                             </form>
-                         </div>
-                     </div>
-                 </div>
-                 </div> *@
-
-                            <div class="col-md-3 col-sm-6">
-                <div class="product-grid">
-                    <div class="product-image">
-                        <a class="image">
+                <div class="col-md-3 col-sm-6">
+                    <div class="product-grid">
+                        <div class="product-image">
+                            <a class="image">
                                 <img src="data:image;base64,@Convert.ToBase64String(item.ImageData)" class="img-1" alt="Product Image" />
                                 <img src="data:image;base64,@Convert.ToBase64String(item.ImageData)" class="img-2" alt="Product Image" />
-                        </a>
-                        <ul class="product-links">
+                            </a>
+                            <ul class="product-links">
                                 <li>
-                                    <form asp-page-handler="AddToWishlist" method="post" asp-route-productId="@item.ID">
+                                            @{
+                                                var isInWishlist = Model.Wishlist.Any(w => w.ProductId == item.ID);
+                                            }
+                                    <form asp-page-handler="ToggleWishlist" method="post" asp-route-productId="@item.ID">
                                         <button type="submit">
-                                            <i class="fa fa-heart"></i>
+                                                    @if (isInWishlist)
+                                                    {
+                                                    <i class="fa fa-heart text-danger"></i> <!-- If product is in wishlist -->
+                                                    }
+                                                    else
+                                                    {
+                                                    <i class="fa fa-heart"></i> <!-- If product is not in wishlist -->
+                                                    }
                                         </button>
                                     </form>
                                 </li>
-                            
-                            <li>
-                                <form asp-page-handler="AddToCart" method="post" asp-route-productId="@item.ID">
-                                    <button type="submit">
-                                        <i class="fa fa-shopping-cart"></i>
-                                    </button>
-                                </form>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="product-content">
-                        <ul class="rating">
-                            <li class="fas fa-star"></li>
-                            <li class="fas fa-star"></li>
-                            <li class="fas fa-star"></li>
-                            <li class="fas fa-star"></li>
-                            <li class="fas fa-star disable"></li>
-                            <li class="disable">(1 reviews)</li>
-                        </ul>
-                                <h5 class="card-title product-name">@item.Name</h5>
-                                 <p class="card-text">$@item.UnitPrice</p>
+                                <li>
+                                    <form asp-page-handler="AddToCart" method="post" asp-route-productId="@item.ID">
+                                        <button type="submit">
+                                            <i class="fa fa-shopping-cart"></i>
+                                        </button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="product-content">
+                            <ul class="rating">
+                                <li class="fas fa-star"></li>
+                                <li class="fas fa-star"></li>
+                                <li class="fas fa-star"></li>
+                                <li class="fas fa-star"></li>
+                                <li class="fas fa-star disable"></li>
+                                <li class="disable">(1 reviews)</li>
+                            </ul>
+                            <h5 class="card-title product-name">@item.Name</h5>
+                            <p class="card-text">$@item.UnitPrice</p>
+                        </div>
                     </div>
                 </div>
-            </div>
             }
     </div>
 </div>
