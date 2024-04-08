@@ -32,6 +32,7 @@ namespace multiple_tables.Pages.Wishlist
                 string userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
                 Wishlist = await _context.Wishlist
                     .Include(w => w.Product)
+                    .Include(w => w.Product.Category)
                     .Where(w => w.CustomerID == userId)
                     .ToListAsync();
             }

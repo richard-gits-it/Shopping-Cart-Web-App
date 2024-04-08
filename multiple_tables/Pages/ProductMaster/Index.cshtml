@@ -5,7 +5,7 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>Product Manager</h1>
 
 <p>
     <a asp-page="Create">Create New</a>
@@ -14,7 +14,7 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Products[0].ImageData)
+                
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Products[0].Name)
@@ -38,35 +38,42 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model.Products) {
-        <tr>
-            <td>
-                    <img src="data:image/jpeg;base64,@Convert.ToBase64String(item.ImageData)" alt="Product Image" style="max-width: 30px; max-height: 30px;" />
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.UnitPrice)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Category.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.UnitsInStock)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Discontinued)
-            </td>
-            <td>
-                <a asp-page="./Edit" asp-route-id="@item.ID"><i class="fas fa-edit"></i> Edit</a> |
-                    <a asp-page="./Details" asp-route-id="@item.ID"><i class="fas fa-info-circle"></i> Details</a> |
-                    <a asp-page="./Delete" asp-route-id="@item.ID"><i class="fas fa-trash-alt"></i> Delete</a>
-            </td>
-        </tr>
-}
+
+        @foreach (var item in Model.Products)
+        {
+            <div class="card rounded-3 mb-3" style="font-size: 85%; padding: 0.5rem;">
+                <div class="card-body p-2">
+                    <div class="row d-flex justify-content-between align-items-center" style="margin-bottom: 0.5rem;">
+                        <div class="col-md-1 col-lg-1 col-xl-1">
+                            <img src="data:image/jpeg;base64,@Convert.ToBase64String(item.ImageData)" class="img-fluid rounded-3" alt="Cotton T-shirt">
+                        </div>
+                        <div class="col-md-2 col-lg-2 col-xl-2">
+                            <p><span class="text-muted">Name: </span>@item.Name</p>
+                            <p><span class="text-muted">Brand: </span>@item.Category.Name</p>
+                            <p><span class="text-muted">Product#: </span>@item.ID</p>
+                        </div>
+                        <div class="col-md-2 col-lg-1 col-xl-1 offset-lg-1">
+                            <h7 class="mb-0"><span class="text-muted">In Stock: </span>@item.UnitsInStock</h7>
+                        </div>
+                        <div class="col-md-3 col-lg-2 col-xl-2">
+                            <h7 class="mb-0"><span class="text-muted">Price: </span>$@item.UnitPrice.ToString("F2")</h7>
+                        </div>
+                        <div class="col-md-2 col-lg-1 col-xl-1 text-end">
+                            <div class="dropdown">
+                                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Actions
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    <li><a class="dropdown-item" asp-page="./Edit" asp-route-id="@item.ID"><i class="fas fa-edit"></i> Edit</a></li>
+                                    <li><a class="dropdown-item" asp-page="./Details" asp-route-id="@item.ID"><i class="fas fa-info-circle"></i> Details</a></li>
+                                    <li><a class="dropdown-item" asp-page="./Delete" asp-route-id="@item.ID"><i class="fas fa-trash-alt"></i> Delete</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+
     </tbody>
 </table>
