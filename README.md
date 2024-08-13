@@ -1,7 +1,7 @@
 # Shopping Cart Web App
 
-![Platform](https://img.shields.io/badge/platform-Web-blue.svg) ![Framework](https://img.shields.io/badge/framework-ASP.NET_Core_Razor_Pages-blue.svg) ![Language](https://img.shields.io/badge/language-C%23-blue.svg) ![HTML](https://img.shields.io/badge/HTML-5-orange.svg)
-![CSS](https://img.shields.io/badge/CSS-3-blue.svg)
+![Platform](https://img.shields.io/badge/platform-Web-blue.svg) ![Framework](https://img.shields.io/badge/framework-ASP.NET_Core_Razor_Pages-blue.svg) ![Language](https://img.shields.io/badge/language-C%23-blue.svg) ![Azure SQL](https://img.shields.io/badge/Azure_SQL-Enabled-blue.svg)
+![Entity Framework](https://img.shields.io/badge/Entity_Framework-6.0-blue.svg)
 
 ## Table of Contents
 - [Introduction](#introduction)
